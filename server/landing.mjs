@@ -6,7 +6,7 @@ import { dirname, resolve, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const mime = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.riv': 'application/octet-stream', '.png': 'image/png', '.jpg': 'image/jpeg', '.mp3': 'audio/mpeg', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.wasm': 'application/wasm' };
-const brandAssets = new Set(['/nana-logo-1024-268KB.png', '/nana-lilac-bubble-bottom-left-nogrid.png', '/01-agent-home.jpg', '/02-agent-command.jpg', '/03-agent-confirmation.jpg', '/04-agent-transaction-confirmed.jpg']);
+const brandAssets = new Set(['/nana-avatar-1024-475KB.png', '/nana-logo-1024-268KB.png', '/nana-lilac-bubble-bottom-left-nogrid.png', '/01-agent-home.jpg', '/02-agent-command.jpg', '/03-agent-confirmation.jpg', '/04-agent-transaction-confirmed.jpg']);
 const waitlist = createWaitlistHandler();
 export const server = http.createServer(async (req, res) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');

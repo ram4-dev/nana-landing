@@ -15,6 +15,7 @@ function request(method, url, data, headers = {}) {
 }
 assert.equal((await request('GET','/')).status,200);
 assert.equal((await request('GET','/.env')).status,404);
+const favicon=await request('GET','/nana-avatar-1024-475KB.png');assert.equal(favicon.status,200);assert.equal(favicon.headers['Content-Type'],'image/png');
 for(const url of ['/scripts/analytics.mjs','/vendor/vercel-analytics-2.0.1.mjs']) { const result=await request('GET',url); assert.equal(result.status,200); assert.equal(result.headers['Content-Type'],'text/javascript; charset=utf-8'); }
 const thumbs=await request('GET','/nani/gaze/nani-thumbs-up.png'); assert.equal(thumbs.status,200); assert.equal(thumbs.headers['Content-Type'],'image/png');
 const welcome = await request('GET','/api/nani/welcome');

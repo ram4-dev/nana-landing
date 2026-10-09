@@ -3,7 +3,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 export const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const publicFiles = [
-  'index.html', 'styles/landing.css', 'scripts/landing.js', 'scripts/analytics.mjs',
+  'index.html', 'nana-avatar-1024-475KB.png', 'styles/landing.css', 'scripts/landing.js', 'scripts/analytics.mjs',
   'nana-logo-1024-268KB.png', 'nana-lilac-bubble-bottom-left-nogrid.png',
   '01-agent-home.jpg', '02-agent-command.jpg', '03-agent-confirmation.jpg', '04-agent-transaction-confirmed.jpg',
   'nani/gaze/gaze-center.png', 'nani/build/nani.riv', 'audio/nani-welcome.mp3', 'audio/nani-welcome.json'

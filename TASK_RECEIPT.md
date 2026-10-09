@@ -1,5 +1,9 @@
 # Task receipt: Nani gaze alignment and animation
 
+## Favicon más grande — 2026-10-09
+
+- Favicon usa avatarfrontalexistente nana-avatar-1024-475KB.png, con cara mucho más grande que el logo completo. No se alteraron imágenesfuente. Cache?v2 y assetpúblicocopiadoenbuild/servidolocal. SVG embebido descartado al versevacíoenrendernative.
+
 ## Web Analytics y favicon — 2026-10-09
 
 - Paquete @vercel/analytics2.0.1 instalado/pinned +lock. Landing estática: scripts/analytics.mjs importa inject desde SDKESMlocalcopiadoalvendorporbuild. Build18archivos. Serverdevelopment permite ambas rutas.mjs con MIMEjavascript. No Next/React agregados.

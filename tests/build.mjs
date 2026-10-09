@@ -14,7 +14,7 @@ assert.deepEqual((await list('dist')).sort(), [...publicFiles,...Object.values(r
 const html=await readFile('dist/index.html','utf8');
 assert(html.includes('RuntimeLoader.setWasmUrl'));
 assert(!html.includes('unpkg.com'));
-assert(html.includes('rel="icon" type="image/png" href="nana-logo-1024-268KB.png"'));
+assert(html.includes('rel="icon" type="image/png" href="nana-avatar-1024-475KB.png?v=2"'));
 assert(html.includes('type="module" src="scripts/analytics.mjs"'));
 for(const match of html.matchAll(/(?:src|href)="([^"]+)"/g)) {
   const path=match[1].split('?')[0];
