@@ -1,0 +1,21 @@
+.env
+.env.*
+data/
+.git/
+.atl/
+.agents/
+.codex/
+3d/
+tests/
+docs/
+supabase/
+HANDOFF.md
+TASK_RECEIPT.md
+NANI_3D_PLAN.md
+Imagen de Codex*.png
+nani/scene.rml
+nani/rive.yaml
+nani/mouth/
+nani/build/page-*.png
+nani/build/*.json
+scripts/*.py

@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f1ea">
+  <meta name="description" content="Nana Wallet: say or type what you want to do. Nani prepares it. You review and confirm. Join the waitlist.">
+  <title>Nana Wallet — Your voice. Your choice.</title>
+  <link rel="stylesheet" href="styles/landing.css?v=43">
+  <script src="vendor/rive-2.44.0.js"></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="header wrap">
+    <a class="logo" href="#" aria-label="Nana Wallet, home"><span class="brand-avatar" aria-hidden="true"><img src="nana-logo-1024-268KB.png" alt=""></span>nana <small>wallet</small></a>
+    <nav class="nav" aria-label="Main navigation"><a href="#app">Meet the app</a><a class="nav-cta" href="#waitlist">Join the waitlist</a></nav>
+  </header>
+  <main id="main" class="wrap">
+    <section class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">Your voice. Your choice.</p>
+      <div class="character-stage" id="character-stage">
+        <h1 id="hero-title" aria-label="Nana Wallet. Your money. Your voice.">
+          <span class="hero-brand-row" aria-hidden="true"><span><span class="brand-letter" style="--letter:0">N</span><span class="brand-letter" style="--letter:1">a</span><span class="brand-letter" style="--letter:2">n</span><span class="brand-letter" style="--letter:3">a</span></span><span><span class="brand-letter" style="--letter:0">W</span><span class="brand-letter" style="--letter:1">a</span><span class="brand-letter" style="--letter:2">l</span><span class="brand-letter" style="--letter:3">l</span><span class="brand-letter" style="--letter:4">e</span><span class="brand-letter" style="--letter:5">t</span></span></span>
+          <span class="hero-message-row" aria-hidden="true"><span>Your money.</span><span>Your voice.</span></span>
+        </h1>
+        <img class="nani-fallback" src="nani/gaze/gaze-center.png" alt="" aria-hidden="true">
+        <canvas id="nani" width="998" height="1576" aria-label="Nani, your animated assistant"></canvas>
+      </div>
+      <p id="error" hidden role="status"></p>
+      <audio id="voice" src="audio/nani-welcome.mp3" preload="auto"></audio>
+    </section>
+    <section class="waitlist" id="waitlist" aria-labelledby="waitlist-title">
+      <h2 id="waitlist-title">Be there when Nana arrives.</h2>
+      <p>Leave your email. We’ll let you know when you can try Nana.</p>
+      <form id="waitlist-form" action="/api/waitlist" method="post">
+        <label class="email-label" for="email">Your email</label>
+        <div class="form-row"><input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" maxlength="254" required><button class="primary" id="waitlist-submit" type="submit">Join the waitlist <span aria-hidden="true">↗</span></button></div>
+        <div class="trap" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off"></div>
+        <p class="form-status" id="waitlist-status" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+    <section class="section" id="app" aria-labelledby="app-title">
+      <div class="section-head"><p class="eyebrow">A first look at Nana</p><h2 id="app-title">One conversation.<br>One step at a time.</h2><p>From asking for help to reviewing a transfer,<br>with the details you need to decide.</p></div>
+      <div class="screen-grid" aria-label="Nana Wallet app screens">
+        <figure><img class="app-screen" src="01-agent-home.jpg" alt="Nana home screen with Nani and options to talk or type." width="390" height="844" loading="lazy"><figcaption><b>01 · Meet Nani</b>Use your voice or type a message.</figcaption></figure>
+        <figure><img class="app-screen" src="02-agent-command.jpg" alt="A request to send 20 USDC to Sofi, entered in the message field." width="390" height="844" loading="lazy"><figcaption><b>02 · Tell her what you need</b>Nani prepares your request.</figcaption></figure>
+        <figure><img class="app-screen" src="03-agent-confirmation.jpg" alt="Transfer review showing amount, recipient, network and estimated fee, with Cancel and Confirm buttons." width="390" height="844" loading="lazy"><figcaption><b>03 · Review the details</b>You decide whether to confirm.</figcaption></figure>
+        <figure><img class="app-screen" src="04-agent-transaction-confirmed.jpg" alt="The transfer confirmation screen in Nana Wallet." width="390" height="844" loading="lazy"><figcaption><b>04 · See the result</b>View the completed transaction.</figcaption></figure>
+      </div><p class="preview-note">A preview of Nana Wallet. The app is in development.</p>
+    </section>
+    <section class="about" aria-labelledby="about-title"><h2 id="about-title">Made to help you<br>do it yourself.</h2><div><p>We’re building a wallet for older adults and people with disabilities, with voice and text as ways to use it.</p><p>Nani helps prepare transactions. You review the details before confirming any money movement.</p><a href="#waitlist">I want to meet Nana <span aria-hidden="true">↗</span></a></div></section>
+  </main>
+  <footer><div class="footer-row wrap"><a class="logo" href="#">nana <small>wallet</small></a><p>Your voice. Your choice.</p><p>Nana Wallet · In development</p></div><section class="privacy wrap" id="privacy"><h2>Your email, for an invitation.</h2><p>When you join, we store your email to let you know about access to Nana. Don’t include wallet details or financial information. From this browser, you can <a href="#waitlist" id="unsubscribe">remove your email from the waitlist</a>.</p></section></footer>
+  <script>
+    const canvas = document.getElementById('nani');
+    const error = document.getElementById('error');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+
+    window.rive.RuntimeLoader.setWasmUrl(new URL('vendor/rive-2.44.0.wasm', document.baseURI).href);
+    window.rive.RuntimeLoader.setWasmFallbackUrl(new URL('vendor/rive-2.44.0-fallback.wasm', document.baseURI).href);
+    const player = new window.rive.Rive({
+      src: 'nani/build/nani.riv?v=landing-v43',
+      canvas,
+      autoplay: true,
+      autoBind: true,
+      stateMachine: 'State Machine 1',
+      onLoad() {
+        player.resizeDrawingSurfaceToCanvas();
+        const vm = player.viewModelInstance;
+        const names = [
+          'mouseX', 'mouseY', 'rotation', 'pupilLeftX', 'pupilRightX', 'pupilY',
+          'apertureHeight', 'apertureY', 'lidTop', 'lidCorner', 'lidTangent', 'lowerY',
+          'poseFront', 'poseLeft', 'poseRight', 'poseThumb', 'sidePupilX',
+          'mouthVisible', 'mouthTop', 'mouthBottom', 'mouthWidth', 'tongueY',
+          'mouthSmall', 'mouthWide', 'mouthRound', 'jawDrop', 'lipDrop', 'upperLipLift'
+        ];
+        const props = Object.fromEntries(names.map(name => [name, vm?.number(name)]));
+        if (!Object.values(props).every(Boolean)) {
+          error.hidden = false;
+          error.textContent = 'Nani couldn’t load. Please refresh the page.';
+          return;
+        }
+        player.bind();
+        canvas.dataset.riveLoaded = 'true';
+        canvas.dataset.animation = 'landing-v43';
+
+        const speechButton = document.getElementById('speech');
+        const voice = document.getElementById('voice');
+        let audioContext = null;
+        let analyser = null;
+        let samples = null;
+        let mouthOpen = 0;
+        let speechShape = 'small';
+        let shapeChangedAt = 0;
+        let frequencySamples = null;
+        let audible = false;
+        let starting = false;
+        if (speechButton) speechButton.disabled = false;
+        function updateSpeechButton() {
+          if (!speechButton) return;
+          const playing = !voice.paused && !voice.ended;
+          speechButton.textContent = starting ? 'Loading…' : playing ? 'Pause' : voice.ended ? 'Replay' : 'Listen to Nani';
+          speechButton.setAttribute('aria-pressed', String(playing));
+          speechButton.setAttribute('aria-label', playing ? 'Pause Nani’s voice' : 'Play Nani’s voice');
+          speechButton.disabled = starting;
+        }
+        function closeMouth() {
+          audible = false;
+          mouthOpen = 0;
+          props.mouthVisible.value = 0;
+          props.mouthTop.value = 24;
+          props.mouthBottom.value = 24;
+          props.mouthWidth.value = 1;
+          props.tongueY.value = 26;
+          props.jawDrop.value = 0;
+          props.lipDrop.value = 0;
+          props.upperLipLift.value = 0;
+          props.mouthSmall.value = 1;
+          props.mouthWide.value = 0;
+          props.mouthRound.value = 0;
+        }
+        async function playVoice(options = {}) {
+          if (starting) return;
+          let welcomeTimeout;
+          starting = true;
+          updateSpeechButton();
+          error.hidden = true;
+          try {
+            if (!audioContext) {
+              const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+              if (!AudioContextClass) throw new Error('Audio is unavailable in this browser.');
+              const context = new AudioContextClass();
+              const meter = context.createAnalyser();
+              meter.fftSize = 1024;
+              const source = context.createMediaElementSource(voice);
+              source.connect(meter);
+              meter.connect(context.destination);
+              audioContext = context;
+              analyser = meter;
+              samples = new Float32Array(meter.fftSize);
+              frequencySamples = new Uint8Array(meter.frequencyBinCount || meter.fftSize / 2);
+            }
+            if (options.quiet) {
+              await Promise.race([
+                audioContext.resume(),
+                new Promise((_, reject) => { welcomeTimeout = setTimeout(() => reject(new Error('Audio requires a user gesture.')), 1500); })
+              ]);
+            } else await audioContext.resume();
+            if (voice.error) voice.load();
+            if (voice.ended) voice.currentTime = 0;
+            await voice.play();
+          } catch (reason) {
+            voice.pause();
+            closeMouth();
+            error.hidden = options.quiet === true;
+            error.textContent = 'We couldn’t play Nani’s voice. Try Listen to Nani again.';
+            console.error('Nani audio:', reason);
+          } finally {
+            clearTimeout(welcomeTimeout);
+            starting = false;
+            updateSpeechButton();
+          }
+          return !voice.paused;
+        }
+        function pauseVoice() { voice.pause(); closeMouth(); updateSpeechButton(); }
+        speechButton?.addEventListener('click', () => voice.paused || voice.ended ? playVoice() : pauseVoice());
+        voice.addEventListener('playing', () => { audible = true; updateSpeechButton(); });
+        for (const event of ['pause', 'ended', 'waiting', 'emptied']) {
+          voice.addEventListener(event, () => { closeMouth(); updateSpeechButton(); });
+        }
+        voice.addEventListener('error', () => {
+          closeMouth(); updateSpeechButton();
+          error.hidden = false;
+          error.textContent = 'Nani’s audio couldn’t load. Please refresh the page.';
+        });
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') pauseVoice(); });
+        window.naniSpeech = {
+          audio: voice, play: playVoice, pause: pauseVoice,
+          setSource(url) {
+            const source = new URL(url, window.location.href);
+            if (source.origin !== window.location.origin) throw new Error('Audio must be served from the same site.');
+            pauseVoice(); voice.src = source.href; voice.load(); updateSpeechButton();
+          }
+        };
+        updateSpeechButton();
+        function updateMouth(now, delta) {
+          let desired = 0;
+          let rounded = false;
+          if (audible && !voice.paused && !voice.ended && analyser && audioContext.state === 'running') {
+            analyser.getFloatTimeDomainData(samples);
+            let power = 0;
+            for (const sample of samples) power += sample * sample;
+            const rms = Math.sqrt(power / samples.length);
+            desired = Math.min(.55, Math.pow(Math.max(0, rms - .008) / .16, .7) * .55);
+            if (analyser.getByteFrequencyData) {
+              analyser.getByteFrequencyData(frequencySamples);
+              let low = 0, mid = 0;
+              const binHz = audioContext.sampleRate / analyser.fftSize;
+              for (let i = 1; i < frequencySamples.length; i++) {
+                const hz = i * binHz;
+                if (hz < 650) low += frequencySamples[i] ** 2;
+                else if (hz < 2400) mid += frequencySamples[i] ** 2;
+              }
+              rounded = low / Math.max(1, low + mid) > .97;
+            }
+          }
+          const smoothing = desired > mouthOpen ? 35 : 60;
+          mouthOpen += (desired - mouthOpen) * (1 - Math.exp(-delta / smoothing));
+          if (desired === 0 && mouthOpen < .004) mouthOpen = 0;
+          props.mouthVisible.value = Math.min(1, mouthOpen * 14);
+          props.upperLipLift.value = mouthOpen === 0 ? 0 : -mouthOpen * 12;
+          props.mouthTop.value = 24 + props.upperLipLift.value;
+          props.mouthBottom.value = 24 + mouthOpen * 70;
+          props.mouthWidth.value = 1 - mouthOpen * .13;
+          props.tongueY.value = 26 + mouthOpen * 40;
+          // Discrete textured visemes avoid prolonged double lip images.
+          const nextShape = rounded && mouthOpen > .35 ? 'round' : mouthOpen > (speechShape === 'wide' ? .38 : .47) ? 'wide' : 'small';
+          if (nextShape !== speechShape && now - shapeChangedAt > 90) {
+            speechShape = nextShape;
+            shapeChangedAt = now;
+          }
+          props.mouthSmall.value = speechShape === 'small' ? 1 : 0;
+          props.mouthWide.value = speechShape === 'wide' ? 1 : 0;
+          props.mouthRound.value = speechShape === 'round' ? 1 : 0;
+          props.jawDrop.value = mouthOpen * 70;
+          props.lipDrop.value = mouthOpen * .5;
+        }
+
+        let targetX = 0;
+        let targetY = 0;
+        let lookX = 0;
+        let lookY = 0;
+        let headX = 0;
+        let headY = 0;
+        let angle = 0;
+        let pose = 0;
+        let transition = null;
+        let lastPointerTime = performance.now();
+        const poseProps = [props.poseFront, props.poseLeft, props.poseRight];
+        let thumbsUpActive = false;
+        window.naniPose = {
+          setThumbsUp(active) {
+            thumbsUpActive = Boolean(active);
+            transition = null;
+            pose = 0;
+            props.poseThumb.value = thumbsUpActive ? 1 : 0;
+            poseProps.forEach((property, index) => { property.value = !thumbsUpActive && index === 0 ? 1 : 0; });
+            canvas.dataset.pose = thumbsUpActive ? 'thumbs-up' : 'tracking';
+          }
+        };
+        const idleEpoch = performance.now();
+        let previousTime = performance.now();
+        let blinkStart = null;
+        let nextBlink = previousTime + 2200 + Math.random() * 1500;
+
+        function followPointer(event) {
+          lastPointerTime = performance.now();
+          const bounds = canvas.getBoundingClientRect();
+          const eyeX = bounds.left + bounds.width * (495.5 / 998);
+          const eyeY = bounds.top + bounds.height * (800 / 1576);
+          const dx = (event.clientX - eyeX) / Math.max(bounds.width * 0.7, window.innerWidth * 0.32);
+          const dy = (event.clientY - eyeY) / Math.max(bounds.height * 0.25, window.innerHeight * 0.28);
+          const distance = Math.max(1, Math.hypot(dx, dy));
+          targetX = dx / distance;
+          targetY = dy / distance;
+        }
+        function centerGaze() {
+          targetX = 0;
+          targetY = 0;
+        }
+        window.addEventListener('pointermove', followPointer, { passive: true });
+        window.addEventListener('pointerleave', centerGaze, { passive: true });
+        window.addEventListener('blur', centerGaze);
+        window.addEventListener('resize', () => player.resizeDrawingSurfaceToCanvas(), { passive: true });
+
+        function setBlink(amount) {
+          // The eye opening and lid curves move; the iris keeps its own shape.
+          props.apertureHeight.value = 96 * (1 - amount);
+          props.apertureY.value = 17 * amount;
+          props.lidTop.value = -49 + 61 * amount;
+          props.lidCorner.value = 17 * amount;
+          props.lidTangent.value = 30 - 25 * amount;
+          props.lowerY.value = 48 - 36 * amount;
+        }
+
+        // The three-quarter poses are original images. Pose changes finish in
+        // 140 ms and settle on one image, rather than holding a double face.
+        function setPose(now) {
+          if (thumbsUpActive) return;
+          let requested = pose;
+          if (targetX > 0.28) requested = 2;
+          else if (targetX < -0.28) requested = 1;
+          else if (Math.abs(targetX) < 0.18) requested = 0;
+          if (!reducedMotion && now - lastPointerTime > 8000) {
+            const phase = ((now - idleEpoch) / 1000) % 22;
+            requested = phase > 9 && phase < 11 ? 1 : phase > 16 && phase < 18 ? 2 : 0;
+          }
+          if (!transition && requested !== pose) {
+            // Pass through the front when changing from one side to the other.
+            const next = pose !== 0 && requested !== 0 ? 0 : requested;
+            transition = { from: pose, to: next, started: now };
+          }
+          if (transition) {
+            const t = reducedMotion ? 1 : Math.min(1, (now - transition.started) / 140);
+            const eased = t * t * (3 - 2 * t);
+            poseProps.forEach((property, index) => {
+              property.value = index === transition.from ? 1 - eased : index === transition.to ? eased : 0;
+            });
+            if (t === 1) { pose = transition.to; transition = null; }
+          }
+        }
+
+        function frame(now) {
+          const delta = Math.max(0, Math.min(now - previousTime, 50));
+          previousTime = now;
+          const eyeSmoothing = 1 - Math.exp(-delta / 90);
+          const headSmoothing = 1 - Math.exp(-delta / 340);
+          lookX += (targetX - lookX) * eyeSmoothing;
+          lookY += (targetY - lookY) * eyeSmoothing;
+          props.pupilLeftX.value = 7 + lookX * 24;
+          props.pupilRightX.value = -7 + lookX * 24;
+          props.pupilY.value = lookY * 18;
+          props.sidePupilX.value = lookX * 24;
+          // Head/neck pose pivots at the collar; the original torso is a separate layer.
+          headX += ((reducedMotion ? 0 : targetX * 2) - headX) * headSmoothing;
+          headY += ((reducedMotion ? 0 : targetY * 2) - headY) * headSmoothing;
+          angle += ((reducedMotion ? 0 : targetX * 0.018) - angle) * headSmoothing;
+          props.mouseX.value = headX;
+          props.mouseY.value = headY;
+          props.rotation.value = angle;
+          setPose(now);
+          updateMouth(now, delta);
+
+          if (blinkStart === null && now >= nextBlink) blinkStart = now;
+          let blink = 0;
+          if (blinkStart !== null) {
+            const elapsed = now - blinkStart;
+            if (elapsed < 75) blink = Math.sin((elapsed / 75) * Math.PI / 2);
+            else if (elapsed < 110) blink = 1;
+            else if (elapsed < 235) blink = Math.cos(((elapsed - 110) / 125) * Math.PI / 2);
+            else {
+              blinkStart = null;
+              nextBlink = now + 2600 + Math.random() * 3200;
+            }
+          }
+          setBlink(blink);
+          requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      },
+      onLoadError(event) {
+        error.hidden = false;
+        error.textContent = `Nani couldn’t load: ${event?.message || 'loading error'}`;
+      }
+    });
+  </script>
+  <script src="scripts/landing.js?v=43" defer></script>
+</body>
+</html>

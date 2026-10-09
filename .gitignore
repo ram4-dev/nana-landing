@@ -1,0 +1,14 @@
+/.atl/
+/.DS_Store
+/data/
+
+.env
+.env.*
+!.env.example
+
+/node_modules/
+/dist/
+/.vercel/
+.vercel
+.env*
+!.env.example

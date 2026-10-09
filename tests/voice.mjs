@@ -1,0 +1,27 @@
+import { tmpdir } from 'node:os';
+import { resolve } from 'node:path';
+import { strict as assert } from 'node:assert';
+import { mkdtemp, readFile } from 'node:fs/promises';
+import { generateWelcome, welcomeText } from '../scripts/generate-welcome.mjs';
+const dir = await mkdtemp(resolve(tmpdir(), 'nana-voice-check-'));
+let calls = 0;
+const request = async (url, init) => {
+  calls++;
+  assert.equal(init.headers['xi-api-key'], 'test-only');
+  if (url.endsWith('/voices')) return new Response(JSON.stringify({voices:[{voice_id:'test-voice',name:'Sarah',labels:{gender:'female',accent:'american'}}]}),{status:200});
+  assert(url.includes('/test-voice?output_format=mp3_44100_128'));
+  assert.equal(init.method,'POST');
+  assert.equal(JSON.parse(init.body).text,welcomeText);
+  assert.equal(JSON.parse(init.body).model_id,'eleven_multilingual_v2');
+  return new Response(Buffer.alloc(2048,1),{status:200,headers:{'content-type':'audio/mpeg'}});
+};
+await assert.rejects(generateWelcome({request,outputDir:dir}),/Missing ELEVEN_LABS_API_KEY/);
+assert.equal(calls,0);
+assert.deepEqual(await generateWelcome({apiKey:'test-only',request,outputDir:dir}),{bytes:2048});
+assert.equal(calls,2);
+assert.equal((await readFile(dir+'/nani-welcome.mp3')).length,2048);
+const metadata=JSON.parse(await readFile(dir+'/nani-welcome.json','utf8'));
+assert.equal(metadata.provider,'elevenlabs');assert.equal(metadata.text,welcomeText);assert(!JSON.stringify(metadata).includes('test-only'));
+await assert.rejects(generateWelcome({apiKey:'test-only',voiceId:'test-voice',request:async()=>new Response('denied',{status:401}),outputDir:dir}),/401/);
+await assert.rejects(generateWelcome({apiKey:'test-only',voiceId:'test-voice',request:async()=>new Response('not audio',{status:200,headers:{'content-type':'application/json'}}),outputDir:dir}),/invalid audio/);
+console.log('PASS ElevenLabs contract, voice selection, generation, safe metadata, missing key, provider failure and invalid-audio handling. Provider mocked; no paid generation.');
