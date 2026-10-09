@@ -5,7 +5,7 @@ import { createWaitlistHandler, json } from './waitlist.mjs';
 import { dirname, resolve, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const mime = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.riv': 'application/octet-stream', '.png': 'image/png', '.jpg': 'image/jpeg', '.mp3': 'audio/mpeg', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.wasm': 'application/wasm' };
+const mime = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.mjs': 'text/javascript; charset=utf-8', '.riv': 'application/octet-stream', '.png': 'image/png', '.jpg': 'image/jpeg', '.mp3': 'audio/mpeg', '.svg': 'image/svg+xml', '.woff2': 'font/woff2', '.wasm': 'application/wasm' };
 const brandAssets = new Set(['/nana-logo-1024-268KB.png', '/nana-lilac-bubble-bottom-left-nogrid.png', '/01-agent-home.jpg', '/02-agent-command.jpg', '/03-agent-confirmation.jpg', '/04-agent-transaction-confirmed.jpg']);
 const waitlist = createWaitlistHandler();
 export const server = http.createServer(async (req, res) => {
@@ -27,9 +27,10 @@ export const server = http.createServer(async (req, res) => {
     if (!['GET', 'HEAD'].includes(req.method)) return json(res, 405, { error: 'Method not allowed.' });
     const name = decodeURIComponent(url.pathname === '/' ? '/index.html' : url.pathname);
     const runtimeFile = { '/vendor/rive-2.44.0.js': 'rive.js', '/vendor/rive-2.44.0.wasm': 'rive.wasm', '/vendor/rive-2.44.0-fallback.wasm': 'rive_fallback.wasm' }[name];
-    const publicFile = Boolean(runtimeFile) || brandAssets.has(name) || name === '/index.html' || name === '/styles/landing.css' || name === '/scripts/landing.js' || name === '/nani/build/nani.riv' || /^\/(audio|assets|nani\/gaze)\/[a-zA-Z0-9_./-]+\.(png|svg|mp3|woff2)$/.test(name);
+    const analyticsRuntime = name === '/vendor/vercel-analytics-2.0.1.mjs';
+    const publicFile = Boolean(runtimeFile || analyticsRuntime) || brandAssets.has(name) || name === '/index.html' || name === '/styles/landing.css' || name === '/scripts/landing.js' || name === '/scripts/analytics.mjs' || name === '/nani/build/nani.riv' || /^\/(audio|assets|nani\/gaze)\/[a-zA-Z0-9_./-]+\.(png|svg|mp3|woff2)$/.test(name);
     if (!publicFile || name.includes('..') || name.split('/').some(part => part.startsWith('.'))) return json(res, 404, { error: 'Not found.' });
-    const data = await readFile(runtimeFile ? resolve(root, 'node_modules/@rive-app/canvas', runtimeFile) : resolve(root, '.' + name));
+    const data = await readFile(runtimeFile ? resolve(root, 'node_modules/@rive-app/canvas', runtimeFile) : analyticsRuntime ? resolve(root, 'node_modules/@vercel/analytics/dist/index.mjs') : resolve(root, '.' + name));
     res.writeHead(200, { 'Content-Type': mime[extname(name)] || 'application/octet-stream', 'Cache-Control': 'no-cache', 'Content-Length': data.length });
     res.end(req.method === 'HEAD' ? undefined : data);
   } catch (error) { json(res, error.status || (error.code === 'ENOENT' ? 404 : 500), { error: error.status ? error.message : 'We couldn’t complete the request. Please try again.' }); }

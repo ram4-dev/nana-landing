@@ -7,14 +7,15 @@
     "start": "node --env-file-if-exists=.env server/landing.mjs",
     "check": "node scripts/check.mjs",
     "voice:generate": "node --env-file-if-exists=.env scripts/generate-welcome.mjs",
-    "test": "node tests/landing.mjs && node tests/voice.mjs && node tests/cloud.mjs && node tests/build.mjs",
+    "test": "node tests/landing.mjs && node tests/voice.mjs && node tests/cloud.mjs && node tests/build.mjs && node tests/analytics.mjs",
     "build": "node scripts/build.mjs",
     "verify:deployment": "node scripts/verify-deployment.mjs",
     "db:migrate": "node --env-file-if-exists=.env scripts/apply-waitlist-migration.mjs",
     "deploy:vercel": "node --env-file=.env scripts/deploy-vercel.mjs"
   },
   "dependencies": {
-    "@rive-app/canvas": "2.44.0"
+    "@rive-app/canvas": "2.44.0",
+    "@vercel/analytics": "2.0.1"
   },
   "engines": {
     "node": "24.x"

@@ -91,3 +91,9 @@ The agent attempted production deployment on 2026-10-09. The CLI exited while lo
 The source repository is https://github.com/ram4-dev/nana-landing. It was created on 2026-10-09 and made public at the user’s request. Local staging, checks and credential-pattern inspection passed. Earlier sandbox failures are retained in the handoff as history.
 
 The verification script now follows GET/HEAD redirects and uses the final landing origin for API requests. A login page produces an explicit Deployment Protection message. POST/DELETE redirects remain rejected.
+
+## Web Analytics and tab icon
+
+The landing includes `@vercel/analytics@2.0.1` through the generic `inject` API, served as a local browser ES module. This static HTML application does not use the Next.js component. The production build includes both the entrypoint and SDK. Localhost and file previews do not send analytics; query strings and hashes are removed before pageview transmission. No custom waitlist/email events are added.
+
+Enable Web Analytics in the linked Vercel project dashboard under Analytics, then deploy the updated build. SDK integration is tested, but dashboard enablement and actual collected pageviews have not been confirmed from this session. The tab favicon uses the existing Nana logo PNG.

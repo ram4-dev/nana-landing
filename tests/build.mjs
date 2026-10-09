@@ -1,6 +1,6 @@
 import { strict as assert } from 'node:assert';
 import { readFile, readdir } from 'node:fs/promises';
-import { build, publicFiles, runtimeFiles } from '../scripts/build.mjs';
+import { build, publicFiles, runtimeFiles, vendorFiles } from '../scripts/build.mjs';
 await build();
 async function list(dir) {
   const result=[];
@@ -10,10 +10,12 @@ async function list(dir) {
   }
   return result;
 }
-assert.deepEqual((await list('dist')).sort(), [...publicFiles,...Object.values(runtimeFiles).map(name=>'vendor/'+name)].sort());
+assert.deepEqual((await list('dist')).sort(), [...publicFiles,...Object.values(runtimeFiles).map(name=>'vendor/'+name),...Object.values(vendorFiles)].sort());
 const html=await readFile('dist/index.html','utf8');
 assert(html.includes('RuntimeLoader.setWasmUrl'));
 assert(!html.includes('unpkg.com'));
+assert(html.includes('rel="icon" type="image/png" href="nana-logo-1024-268KB.png"'));
+assert(html.includes('type="module" src="scripts/analytics.mjs"'));
 for(const match of html.matchAll(/(?:src|href)="([^"]+)"/g)) {
   const path=match[1].split('?')[0];
   if(path.startsWith('#') || path.startsWith('http') || path.startsWith('/api')) continue;

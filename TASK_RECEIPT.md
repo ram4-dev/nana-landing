@@ -1,5 +1,11 @@
 # Task receipt: Nani gaze alignment and animation
 
+## Web Analytics y favicon — 2026-10-09
+
+- Paquete @vercel/analytics2.0.1 instalado/pinned +lock. Landing estática: scripts/analytics.mjs importa inject desde SDKESMlocalcopiadoalvendorporbuild. Build18archivos. Serverdevelopment permite ambas rutas.mjs con MIMEjavascript. No Next/React agregados.
+- Se omite trackinglocalhost/file; hookbeforeSend elimina query/hash deURL, no eventos de email. SDK queue/injection/dedup/privacy/localhost probados con DOMsimulado. Favicon usaPNGlogoexistente, sin modificarimagen.
+- Check/test/build/diffcheck PASS. Portless EPERM nuevamente; browserE2E/collectedpageviews/dashboardEnable todavía no comprobados. GitHubpush/despliegue se intentan para entregar integración.
+
 ## Publicación pública GitHub — 2026-10-09
 
 - Usuario autorizó visibilidad pública y push completo. GitHub PATCH confirmó public:true en ram4-dev/nana-landing. Nuevo gitaddall pasó; no se modificó configuración del sandbox.
